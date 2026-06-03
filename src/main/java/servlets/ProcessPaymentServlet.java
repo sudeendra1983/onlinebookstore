@@ -8,12 +8,52 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.bittercode.constant.BookStoreConstants;
-import com.bittercode.model.Book;
-import com.bittercode.model.Cart;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+    private JedisPool jedisPool = StoreUtil.getJedisPool();
+            HttpSession session = req.getSession();
+            try (Jedis jedis = jedisPool.getResource()) {
+                cartItems = StoreUtil.readCartFromRedis(jedis, session);
+            }
+                pw.println(this.addBookToCard(bCode, bName, bAuthor, bPrice, availableQty));
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.del(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                StoreUtil.clearCartInRedis(jedis, session);
+            }
+            try (Jedis jedis = jedisPool.getResource()) {
+                cartItems = StoreUtil.readCartFromRedis(jedis, session);
+            }
+                pw.println(this.addBookToCard(bCode, bName, bAuthor, bPrice, availableQty));
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.del(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                StoreUtil.clearCartInRedis(jedis, session);
+            }
+            try (Jedis jedis = jedisPool.getResource()) {
+                cartItems = StoreUtil.readCartFromRedis(jedis, session);
+            }
+                pw.println(this.addBookToCard(bCode, bName, bAuthor, bPrice, availableQty));
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.del(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                StoreUtil.clearCartInRedis(jedis, session);
+            }
+            try (Jedis jedis = jedisPool.getResource()) {
+                cartItems = StoreUtil.readCartFromRedis(jedis, session);
+            }
+                pw.println(this.addBookToCard(bCode, bName, bAuthor, bPrice, availableQty));
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.del(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                StoreUtil.clearCartInRedis(jedis, session);
+            }
 import com.bittercode.model.UserRole;
 import com.bittercode.service.BookService;
 import com.bittercode.service.impl.BookServiceImpl;

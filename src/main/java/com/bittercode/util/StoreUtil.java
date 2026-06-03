@@ -1,28 +1,350 @@
-package com.bittercode.util;
-
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import com.bittercode.model.UserRole;
-
-/*
- * Store UTil File To Store Commonly used methods
- */
-public class StoreUtil {
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
     /**
-     * Check if the User is logged in with the requested role
+     * Jedis connection pool for Azure Cache for Redis.
+     *
+     * Connection details are supplied via environment variables so that
+     * they can be wired from Azure App Configuration / Key Vault.
      */
-    public static boolean isLoggedIn(UserRole role, HttpSession session) {
 
-        return session.getAttribute(role.toString()) != null;
+    private static final String REDIS_HOST = System.getenv("REDIS_HOST");
+    private static final int REDIS_PORT = Integer.parseInt(System.getenv().getOrDefault("REDIS_PORT", "6379"));
+    private static final String REDIS_PASSWORD = System.getenv("REDIS_PASSWORD");
+
+    private static final JedisPool jedisPool;
+
+    static {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        if (REDIS_PASSWORD != null && !REDIS_PASSWORD.isEmpty()) {
+            jedisPool = new JedisPool(poolConfig, REDIS_HOST, REDIS_PORT, 2000, REDIS_PASSWORD);
+        } else {
+            jedisPool = new JedisPool(poolConfig, REDIS_HOST, REDIS_PORT);
+        }
     }
 
-    /**
-     * Modify the active tab in the page menu bar
-     */
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
+
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
+
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
+
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
+
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
+
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
+
+    private static String buildSessionKey(HttpSession session, String key) {
+        return session.getId() + ":" + key;
+    }
+    public static boolean isLoggedIn(UserRole role, HttpSession session) {
+        String redisKey = buildSessionKey(session, role.toString());
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(redisKey);
+        }
+        String selectedBookId = req.getParameter("selectedBookId");
+        HttpSession session = req.getSession();
+            String items;
+            try (Jedis jedis = jedisPool.getResource()) {
+                items = jedis.get(buildSessionKey(session, "items"));
+            }
+                try (Jedis jedis = jedisPool.getResource()) {
+                    jedis.set(buildSessionKey(session, "items"), items);
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    itemQty += 1;
+                    jedis.set(qtyKey, String.valueOf(itemQty));
+                }
+                int itemQty = 0;
+                String qtyKey = buildSessionKey(session, "qty_" + selectedBookId);
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(qtyKey);
+                    if (qtyVal != null) {
+                        itemQty = Integer.parseInt(qtyVal);
+                    }
+                    if (itemQty > 1) {
+                        itemQty--;
+                        jedis.set(qtyKey, String.valueOf(itemQty));
+                    } else {
+                        jedis.del(qtyKey);
+                        items = items.replace(selectedBookId + ",", "");
+                        items = items.replace("," + selectedBookId, "");
+                        items = items.replace(selectedBookId, "");
+                        jedis.set(buildSessionKey(session, "items"), items);
+                    }
+                }
     public static void setActiveTab(PrintWriter pw, String activeTab) {
 
         pw.println("<script>document.getElementById(activeTab).classList.remove(\"active\");activeTab=" + activeTab

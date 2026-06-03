@@ -1,25 +1,39 @@
-package com.bittercode.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+    /**
+     * Database configuration is now fully externalized.
+     *
+     * Values are resolved from environment variables which can be
+     * populated from Azure App Configuration / Key Vault using
+     * the hosting environment's configuration system.
+     */
 
-class DatabaseConfig {
-
-    static Properties prop = new Properties();
-    static {
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream input = classLoader.getResourceAsStream("application.properties");
-
-        try {
-            prop.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static String getEnvOrDefault(String key, String defaultValue) {
+        String value = System.getenv(key);
+        return (value == null || value.isEmpty()) ? defaultValue : value;
     }
 
-    public final static String DRIVER_NAME = prop.getProperty("db.driver");
+    // Driver class name
+    public static final String DRIVER_NAME = getEnvOrDefault("DB_DRIVER", "org.postgresql.Driver");
+
+    // Host, port and database name
+    public static final String DB_HOST = getEnvOrDefault("DB_HOST", "localhost");
+    public static final String DB_PORT = getEnvOrDefault("DB_PORT", "5432");
+    public static final String DB_NAME = getEnvOrDefault("DB_NAME", "bookstore");
+
+    // Credentials – expected to be supplied via Azure Key Vault / App Configuration
+    public static final String DB_USER_NAME = getEnvOrDefault("DB_USERNAME", "bookstore_user");
+    public static final String DB_PASSWORD = getEnvOrDefault("DB_PASSWORD", "change_me");
+
+    /**
+     * JDBC connection string. For PostgreSQL this is of the form:
+     * jdbc:postgresql://host:port/db
+     *
+     * The port is no longer hard coded and can be overridden per environment
+     * using the DB_PORT environment variable.
+     */
+    public static final String CONNECTION_STRING =
+            getEnvOrDefault("DB_CONNECTION_STRING",
+                    "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME);
     public final static String DB_HOST = prop.getProperty("db.host");
     public final static String DB_PORT = prop.getProperty("db.port");
     public final static String DB_NAME = prop.getProperty("db.name");

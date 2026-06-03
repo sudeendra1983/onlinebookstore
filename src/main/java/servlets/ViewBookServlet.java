@@ -8,12 +8,72 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.bittercode.model.Book;
-import com.bittercode.model.UserRole;
-import com.bittercode.service.BookService;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+    BookService bookService = new BookServiceImpl();
+
+    private JedisPool jedisPool = StoreUtil.getJedisPool();
+            HttpSession session = req.getSession();
+                pw.println(this.addBookToCard(session, book));
+    public String addBookToCard(HttpSession session, Book book) {
+        int cartItemQty = 0;
+        try (Jedis jedis = jedisPool.getResource()) {
+            String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+            if (qtyVal != null) {
+                cartItemQty = Integer.parseInt(qtyVal);
+            }
+        }
+            HttpSession session = req.getSession();
+                pw.println(this.addBookToCard(session, book));
+    public String addBookToCard(HttpSession session, Book book) {
+        int cartItemQty = 0;
+        try (Jedis jedis = jedisPool.getResource()) {
+            String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+            if (qtyVal != null) {
+                cartItemQty = Integer.parseInt(qtyVal);
+            }
+        }
+            HttpSession session = req.getSession();
+                pw.println(this.addBookToCard(session, book));
+    public String addBookToCard(HttpSession session, Book book) {
+        int cartItemQty = 0;
+        try (Jedis jedis = jedisPool.getResource()) {
+            String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+            if (qtyVal != null) {
+                cartItemQty = Integer.parseInt(qtyVal);
+            }
+        }
+            HttpSession session = req.getSession();
+                pw.println(this.addBookToCard(session, book));
+    public String addBookToCard(HttpSession session, Book book) {
+        int cartItemQty = 0;
+        try (Jedis jedis = jedisPool.getResource()) {
+            String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+            if (qtyVal != null) {
+                cartItemQty = Integer.parseInt(qtyVal);
+            }
+        }
+            HttpSession session = req.getSession();
+                pw.println(this.addBookToCard(session, book));
+    public String addBookToCard(HttpSession session, Book book) {
+        int cartItemQty = 0;
+        try (Jedis jedis = jedisPool.getResource()) {
+            String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+            if (qtyVal != null) {
+                cartItemQty = Integer.parseInt(qtyVal);
+            }
+        }
+            HttpSession session = req.getSession();
+                pw.println(this.addBookToCard(session, book));
+    public String addBookToCard(HttpSession session, Book book) {
+        int cartItemQty = 0;
+        try (Jedis jedis = jedisPool.getResource()) {
+            String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + bCode));
+            if (qtyVal != null) {
+                cartItemQty = Integer.parseInt(qtyVal);
+            }
+        }
 import com.bittercode.service.impl.BookServiceImpl;
 import com.bittercode.util.StoreUtil;
 

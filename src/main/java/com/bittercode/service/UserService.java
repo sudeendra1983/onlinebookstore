@@ -1,19 +1,8 @@
-package com.bittercode.service;
-
-import javax.servlet.http.HttpSession;
-
-import com.bittercode.model.StoreException;
-import com.bittercode.model.User;
-import com.bittercode.model.UserRole;
-
-public interface UserService {
-
-    public User login(UserRole role, String email, String password, HttpSession session) throws StoreException;
-
-    public String register(UserRole role, User user) throws StoreException;
-
-    public boolean isLoggedIn(UserRole role, HttpSession session);
-
+    public User login(UserRole role, String email, String password) throws StoreException;
+    /**
+     * Stateless service – session management is handled at the web tier
+     * using an external store (e.g. Azure Cache for Redis).
+     */
     public boolean logout(HttpSession session);
 
 }

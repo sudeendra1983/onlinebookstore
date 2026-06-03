@@ -1,32 +1,8 @@
 package com.bittercode.service.impl;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpSession;
-
-import com.bittercode.constant.ResponseCode;
-import com.bittercode.constant.db.UsersDBConstants;
-import com.bittercode.model.StoreException;
-import com.bittercode.model.User;
-import com.bittercode.model.UserRole;
-import com.bittercode.service.UserService;
-import com.bittercode.util.DBUtil;
-
-public class UserServiceImpl implements UserService {
-
-    private static final String registerUserQuery = "INSERT INTO " + UsersDBConstants.TABLE_USERS
-            + "  VALUES(?,?,?,?,?,?,?,?)";
-
-    private static final String loginUserQuery = "SELECT * FROM " + UsersDBConstants.TABLE_USERS + " WHERE "
-            + UsersDBConstants.COLUMN_USERNAME + "=? AND " + UsersDBConstants.COLUMN_PASSWORD + "=? AND "
-            + UsersDBConstants.COLUMN_USERTYPE + "=?";
-
-    @Override
-    public User login(UserRole role, String email, String password, HttpSession session) throws StoreException {
-        Connection con = DBUtil.getConnection();
+    public User login(UserRole role, String email, String password) throws StoreException {
+                user.setPassword(password);
         PreparedStatement ps;
         User user = null;
         try {

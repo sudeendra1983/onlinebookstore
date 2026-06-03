@@ -10,12 +10,64 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import com.bittercode.constant.BookStoreConstants;
-import com.bittercode.model.Book;
-import com.bittercode.model.Cart;
-import com.bittercode.model.UserRole;
+
+    private JedisPool jedisPool = StoreUtil.getJedisPool();
+            String bookIds = "";
+            try (Jedis jedis = jedisPool.getResource()) {
+                String items = jedis.get(StoreUtil.buildSessionScopedKey(session, "items"));
+                if (items != null) {
+                    bookIds = items;
+                }
+            }
+                int qty = 0;
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + book.getBarcode()));
+                    if (qtyVal != null) {
+                        qty = Integer.parseInt(qtyVal);
+                    }
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                String items = jedis.get(StoreUtil.buildSessionScopedKey(session, "items"));
+                if (items != null) {
+                    bookIds = items;
+                }
+            }
+                int qty = 0;
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + book.getBarcode()));
+                    if (qtyVal != null) {
+                        qty = Integer.parseInt(qtyVal);
+                    }
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                String items = jedis.get(StoreUtil.buildSessionScopedKey(session, "items"));
+                if (items != null) {
+                    bookIds = items;
+                }
+            }
+                int qty = 0;
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + book.getBarcode()));
+                    if (qtyVal != null) {
+                        qty = Integer.parseInt(qtyVal);
+                    }
+                }
+            try (Jedis jedis = jedisPool.getResource()) {
+                String items = jedis.get(StoreUtil.buildSessionScopedKey(session, "items"));
+                if (items != null) {
+                    bookIds = items;
+                }
+            }
+                int qty = 0;
+                try (Jedis jedis = jedisPool.getResource()) {
+                    String qtyVal = jedis.get(StoreUtil.buildSessionScopedKey(session, "qty_" + book.getBarcode()));
+                    if (qtyVal != null) {
+                        qty = Integer.parseInt(qtyVal);
+                    }
+                }
 import com.bittercode.service.BookService;
 import com.bittercode.service.impl.BookServiceImpl;
 import com.bittercode.util.StoreUtil;
